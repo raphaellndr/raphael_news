@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:webfeed/webfeed.dart';
+
+import 'package:raphael_news/parser.dart';
+
+
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
 
@@ -11,7 +16,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  final url = "https://www.lemonde.fr/ameriques/rss_full.xml";
+  RssFeed feed;
+
+  @override
+  void initState() {
+    super.initState();
+    parse();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,5 +31,17 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
       ),
     );
+  }
+
+  Future<Null> parse() async {
+
+    RssFeed received = await Parser().loadRSS();
+    
+    if(received != null) {
+      setState(() {
+        feed = received;
+        print(feed.items.length);
+      });
+    }
   }
 }
